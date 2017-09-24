@@ -5,16 +5,23 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.design.widget.Snackbar
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.exception.ApolloException
+import com.beust.klaxon.Parser
 
 import com.jonahstarling.swapi.dummy.DummyContent
 import kotlinx.android.synthetic.main.activity_film_list.*
 import kotlinx.android.synthetic.main.film_list_content.view.*
 
 import kotlinx.android.synthetic.main.film_list.*
+import okhttp3.OkHttpClient
 
 /**
  * An activity representing a list of Pings. This activity
@@ -46,6 +53,24 @@ class FilmListActivity : AppCompatActivity() {
             // activity should be in two-pane mode.
             mTwoPane = true
         }
+
+        val BASE_URL = "http://10.0.2.2:8040/"
+        val okHttpClient = OkHttpClient.Builder().build()
+        val apolloClient = ApolloClient.builder().serverUrl(BASE_URL).okHttpClient(okHttpClient).build();
+        val filmQuery = SWFilmsQuery.builder().build()
+        val filmCall = apolloClient.query(filmQuery)
+        filmCall.enqueue(object : ApolloCall.Callback<SWFilmsQuery.Data>() {
+            override fun onResponse(response: Response<SWFilmsQuery.Data>) {
+                val data = response.data()
+                Log.d("SWAPI-DATA", data.toString())
+                val parser: Parser = Parser()
+                val films = parser.parse(data)
+            }
+
+            override fun onFailure(e: ApolloException) {
+                Log.w("SWAPI-DATA", e.localizedMessage + ": " + e.cause.toString())
+            }
+        })
 
         setupRecyclerView(film_list)
     }

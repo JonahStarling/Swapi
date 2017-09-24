@@ -32,22 +32,6 @@ class FilmDetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val BASE_URL = "http://localhost:8040/"
-        val okHttpClient = OkHttpClient.Builder().build()
-        val apolloClient = ApolloClient.builder().serverUrl(BASE_URL).okHttpClient(okHttpClient).build();
-        val filmQuery = SWFilmsQuery.builder().build()
-        val filmCall = apolloClient.query(filmQuery)
-        filmCall.enqueue(object : ApolloCall.Callback<SWFilmsQuery.Data>() {
-            override fun onResponse(response: Response<SWFilmsQuery.Data>) {
-                val data = response.data()
-                Log.d("SWAPI-DATA", data.toString())
-            }
-
-            override fun onFailure(e: ApolloException) {
-                Log.w("SWAPI-DATA", e.localizedMessage + ": " + e.cause.toString())
-            }
-        })
-
         if (arguments.containsKey(ARG_ITEM_ID)) {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
