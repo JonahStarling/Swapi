@@ -2,6 +2,7 @@ package com.jonahstarling.swapi
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,6 @@ import kotlinx.android.synthetic.main.film_detail.view.*
 import okhttp3.OkHttpClient
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.exception.ApolloException
-import javax.annotation.Nonnull
-import android.R.attr.data
 import com.apollographql.apollo.api.Response
 
 
@@ -33,7 +32,7 @@ class FilmDetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val BASE_URL = "http://localhost:8040"
+        val BASE_URL = "http://localhost:8040/"
         val okHttpClient = OkHttpClient.Builder().build()
         val apolloClient = ApolloClient.builder().serverUrl(BASE_URL).okHttpClient(okHttpClient).build();
         val filmQuery = SWFilmsQuery.builder().build()
@@ -41,11 +40,11 @@ class FilmDetailFragment : Fragment() {
         filmCall.enqueue(object : ApolloCall.Callback<SWFilmsQuery.Data>() {
             override fun onResponse(response: Response<SWFilmsQuery.Data>) {
                 val data = response.data()
-                print(data)
+                Log.d("SWAPI-DATA", data.toString())
             }
 
             override fun onFailure(e: ApolloException) {
-
+                Log.w("SWAPI-DATA", e.localizedMessage + ": " + e.cause.toString())
             }
         })
 
