@@ -45,7 +45,12 @@ class FilmDetailFragment : Fragment() {
         mItem?.let {
             rootView.releaseDate.text = it.releaseDate
             rootView.director.text = it.director
-            rootView.producers.text = "producers temp val"
+            var producersText = ""
+            for (name in it.producers) {
+                producersText += name + ", "
+            }
+            producersText = producersText.dropLast(2)
+            rootView.producers.text = producersText
             rootView.openingCrawl.text = it.openingCrawl
         }
 

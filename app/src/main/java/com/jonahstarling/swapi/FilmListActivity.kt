@@ -14,7 +14,6 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import com.beust.klaxon.Parser
 import com.jonahstarling.swapi.swobjects.Films
 import fragment.FilmDetails
 import kotlinx.android.synthetic.main.activity_film_list.*
@@ -74,7 +73,8 @@ class FilmListActivity : AppCompatActivity() {
                             val openingCrawl = filmDetails.openingCrawl() as String
                             val releaseDate = filmDetails.releaseDate() as String
                             val director = filmDetails.director() as String
-                            val producers = Array(1, { "Jonah" })
+                            val producers = filmDetails.producers() as List<String>
+                            //val producers = List(1, { "Jonah" })
                             val newFilm = Films.Film(id, title, openingCrawl, releaseDate, director, producers)
                             Films.addFilm(newFilm)
                             i += 1
@@ -90,13 +90,6 @@ class FilmListActivity : AppCompatActivity() {
         }
 
         setupRecyclerView(film_list)
-    }
-
-    fun parse(name: String) : Any? {
-        val cls = Parser::class.java
-        return cls.getResourceAsStream(name)?.let { inputStream ->
-            return Parser().parse(inputStream)
-        }
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {

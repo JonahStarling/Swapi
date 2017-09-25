@@ -1,7 +1,6 @@
 package com.jonahstarling.swapi.swobjects
 
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by Jonah on 9/23/2017.
@@ -28,7 +27,7 @@ object Films {
                     val openingCrawl: String,
                     val releaseDate: String,
                     val director: String,
-                    val producers: Array<String>) {
+                    val producers: List<String>) {
         override fun toString(): String = title
     }
 }
