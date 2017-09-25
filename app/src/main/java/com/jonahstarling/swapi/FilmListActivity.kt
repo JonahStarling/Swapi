@@ -64,12 +64,19 @@ class FilmListActivity : AppCompatActivity() {
             override fun onResponse(response: Response<SWFilmsQuery.Data>) {
                 val data = response.data()
                 Log.d("SWAPI-DATA", data.toString())
-                val dataObject = parse(data.toString()) as JSONObject
-                val allFilms = dataObject.get("allFilms") as JSONObject
-                val films = allFilms.getJSONArray("films")
-                val film = films.get(1) as JSONObject
-                val filmTitle = film.getString("title")
-                Log.d("SWAPI-FILM_DATA", filmTitle)
+                val allFilms = data?.allFilms()
+                Log.d("SWAPI-ALLFILMS", allFilms.toString())
+                val films = allFilms?.films()
+                Log.d("SWAPI-FILMS", films.toString())
+                Log.d("SWAPI-FILMONE", films?.get(1)?.fragments()?.filmDetails()?.title())
+
+
+//                val dataObject = parse(data.toString()) as JSONObject
+//                val allFilms = dataObject.get("allFilms") as JSONObject
+//                val films = allFilms.getJSONArray("films")
+//                val film = films.get(1) as JSONObject
+//                val filmTitle = film.getString("title")
+//                Log.d("SWAPI-FILM_DATA", filmTitle)
             }
 
             override fun onFailure(e: ApolloException) {

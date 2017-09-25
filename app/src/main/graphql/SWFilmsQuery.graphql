@@ -1,7 +1,15 @@
 query SWFilms {
   allFilms {
     films {
-      title
+      ...FilmDetails
     }
   }
+}
+
+fragment FilmDetails on Film {
+	title
+  openingCrawl
+  releaseDate
+  director
+  producers
 }
