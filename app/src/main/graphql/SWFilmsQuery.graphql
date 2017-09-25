@@ -7,6 +7,7 @@ query SWFilms {
 }
 
 fragment FilmDetails on Film {
+  id
 	title
   openingCrawl
   releaseDate
