@@ -2,18 +2,12 @@ package com.jonahstarling.swapi
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.apollographql.apollo.ApolloClient
-import com.jonahstarling.swapi.dummy.DummyContent
+import com.jonahstarling.swapi.swobjects.Films
 import kotlinx.android.synthetic.main.activity_film_detail.*
 import kotlinx.android.synthetic.main.film_detail.view.*
-import okhttp3.OkHttpClient
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.api.Response
 
 
 /**
@@ -27,7 +21,7 @@ class FilmDetailFragment : Fragment() {
     /**
      * The dummy content this fragment is presenting.
      */
-    private var mItem: DummyContent.DummyItem? = null
+    private var mItem: Films.Film? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,9 +30,9 @@ class FilmDetailFragment : Fragment() {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP[arguments.getString(ARG_ITEM_ID)]
+            mItem = Films.FILM_MAP[arguments.getString(ARG_ITEM_ID)]
             mItem?.let {
-                activity.toolbar_layout?.title = it.content
+                activity.toolbar_layout?.title = it.title
             }
         }
     }
@@ -49,7 +43,10 @@ class FilmDetailFragment : Fragment() {
 
         // Show the dummy content as text in a TextView.
         mItem?.let {
-            rootView.film_detail.text = it.details
+            rootView.releaseDate.text = it.releaseDate
+            rootView.director.text = it.director
+            rootView.producers.text = "producers temp val"
+            rootView.openingCrawl.text = it.openingCrawl
         }
 
         return rootView

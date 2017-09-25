@@ -1,10 +1,10 @@
 package com.jonahstarling.swapi
 
+import SWFilmsQuery
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
-import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,17 +15,12 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.beust.klaxon.Parser
-
-import com.jonahstarling.swapi.dummy.DummyContent
 import com.jonahstarling.swapi.swobjects.Films
-import fragment.AllFilms
 import fragment.FilmDetails
 import kotlinx.android.synthetic.main.activity_film_list.*
-import kotlinx.android.synthetic.main.film_list_content.view.*
-
 import kotlinx.android.synthetic.main.film_list.*
+import kotlinx.android.synthetic.main.film_list_content.view.*
 import okhttp3.OkHttpClient
-import org.json.JSONObject
 
 /**
  * An activity representing a list of Pings. This activity
@@ -58,38 +53,41 @@ class FilmListActivity : AppCompatActivity() {
             mTwoPane = true
         }
 
-        val BASE_URL = "http://10.0.2.2:8040/"
+        val BASE_URL = "http://10.0.2.2:52426/"
         val okHttpClient = OkHttpClient.Builder().build()
         val apolloClient = ApolloClient.builder().serverUrl(BASE_URL).okHttpClient(okHttpClient).build();
         val filmQuery = SWFilmsQuery.builder().build()
-        val filmCall = apolloClient.query(filmQuery)
-        filmCall.enqueue(object : ApolloCall.Callback<SWFilmsQuery.Data>() {
-            override fun onResponse(response: Response<SWFilmsQuery.Data>) {
-                val data = response.data()
-                val allFilms = data?.allFilms()
-                val films = allFilms?.films()
-                val i = 0
-                if (films != null) {
-                    while (i < films.size) {
-                        Log.d("SWAPI-FILMONE", films[i]?.fragments()?.filmDetails()?.title())
-                        val filmDetails = films[i]?.fragments()?.filmDetails() as FilmDetails
-                        val id = filmDetails.id()
-                        val title = filmDetails.title() as String
-                        val openingCrawl = filmDetails.openingCrawl() as String
-                        val releaseDate = filmDetails.releaseDate() as String
-                        val director = filmDetails.director() as String
-                        val producers = filmDetails.producers() as Array<String>
-                        val newFilm = Films.Film(id, title, openingCrawl, releaseDate, director, producers)
-                        Films.addFilm(newFilm)
+        if (Films.FILMS.size < 6) {
+            val filmCall = apolloClient.query(filmQuery)
+            filmCall.enqueue(object : ApolloCall.Callback<SWFilmsQuery.Data>() {
+                override fun onResponse(response: Response<SWFilmsQuery.Data>) {
+                    val data = response.data()
+                    val allFilms = data?.allFilms()
+                    val films = allFilms?.films()
+                    var i = 0
+                    if (films != null) {
+                        while (i < films.size) {
+                            Log.d("SWAPI-FILMONE", films[i]?.fragments()?.filmDetails()?.title())
+                            val filmDetails = films[i]?.fragments()?.filmDetails() as FilmDetails
+                            val id = filmDetails.id()
+                            val title = filmDetails.title() as String
+                            val openingCrawl = filmDetails.openingCrawl() as String
+                            val releaseDate = filmDetails.releaseDate() as String
+                            val director = filmDetails.director() as String
+                            val producers = Array(1, { "Jonah" })
+                            val newFilm = Films.Film(id, title, openingCrawl, releaseDate, director, producers)
+                            Films.addFilm(newFilm)
+                            i += 1
+                        }
                     }
+                    Log.d("SWAPI-FILMS", Films.FILMS.toString())
                 }
-                Log.d("SWAPI-FILMS", Films.FILMS.toString())
-            }
 
-            override fun onFailure(e: ApolloException) {
-                Log.w("SWAPI-DATA", e.localizedMessage + ": " + e.cause.toString())
-            }
-        })
+                override fun onFailure(e: ApolloException) {
+                    Log.w("SWAPI-DATA", e.localizedMessage + ": " + e.cause.toString())
+                }
+            })
+        }
 
         setupRecyclerView(film_list)
     }
@@ -141,8 +139,7 @@ class FilmListActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = mValues[position]
-            holder.mIdView.text = item.id
-            holder.mContentView.text = item.openingCrawl
+            holder.mTitleView.text = item.title
 
             with(holder.itemView) {
                 tag = item
@@ -155,8 +152,7 @@ class FilmListActivity : AppCompatActivity() {
         }
 
         inner class ViewHolder(mView: View) : RecyclerView.ViewHolder(mView) {
-            val mIdView: TextView = mView.id_text
-            val mContentView: TextView = mView.content
+            val mTitleView: TextView = mView.title
         }
     }
 }
