@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.film_list_content.view.*
 
 import kotlinx.android.synthetic.main.film_list.*
 import okhttp3.OkHttpClient
+import org.json.JSONObject
 
 /**
  * An activity representing a list of Pings. This activity
@@ -63,8 +64,12 @@ class FilmListActivity : AppCompatActivity() {
             override fun onResponse(response: Response<SWFilmsQuery.Data>) {
                 val data = response.data()
                 Log.d("SWAPI-DATA", data.toString())
-                val parser: Parser = Parser()
-                val films = parser.parse(data)
+                val dataObject = parse(data.toString()) as JSONObject
+                val allFilms = dataObject.get("allFilms") as JSONObject
+                val films = allFilms.getJSONArray("films")
+                val film = films.get(1) as JSONObject
+                val filmTitle = film.getString("title")
+                Log.d("SWAPI-FILM_DATA", filmTitle)
             }
 
             override fun onFailure(e: ApolloException) {
@@ -73,6 +78,13 @@ class FilmListActivity : AppCompatActivity() {
         })
 
         setupRecyclerView(film_list)
+    }
+
+    fun parse(name: String) : Any? {
+        val cls = Parser::class.java
+        return cls.getResourceAsStream(name)?.let { inputStream ->
+            return Parser().parse(inputStream)
+        }
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
