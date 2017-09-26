@@ -45,6 +45,7 @@ class FilmListActivity : AppCompatActivity() {
      * device.
      */
     private var mTwoPane: Boolean = false
+    var mainListItems: MutableList<MainListObjects.MLObject> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,13 +71,45 @@ class FilmListActivity : AppCompatActivity() {
         callSpeciesQuery(apolloClient)
         callStarshipsQuery(apolloClient)
         callVehiclesQuery(apolloClient)
-
+        mainListItems.addAll(MainListObjects.MLOBJECTS)
 
         setupRecyclerView(film_list)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.film_list_menu, menu)
+        val searchItem = menu?.findItem(R.id.app_bar_search)
+        val searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+        searchView.setOnSearchClickListener {
+            val searchTerm = searchView.query
+            val tempList: MutableList<MainListObjects.MLObject> = ArrayList()
+            for (swobject in MainListObjects.MLOBJECTS) {
+                val name = swobject.name as CharSequence
+                val objectType = swobject.objectType as CharSequence
+                if (name.contains(searchTerm, true) || name.contains(objectType, true)) {
+                    tempList.add(swobject)
+                }
+            }
+            mainListItems.clear()
+            mainListItems.addAll(tempList)
+        }
+        val filterExpandListener = object : MenuItemCompat.OnActionExpandListener {
+            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                // Do something when action item collapses
+                return true  // Return true to collapse action view
+            }
+
+            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                // Do something when expanded
+                return true  // Return true to expand action view
+            }
+        }
+
+        // Get the MenuItem for the action item
+        val actionMenuItem = menu?.findItem(R.id.action_filter)
+
+        // Assign the listener to that action item
+        MenuItemCompat.setOnActionExpandListener(actionMenuItem, filterExpandListener)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -96,7 +129,7 @@ class FilmListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, MainListObjects.MLOBJECTS, mTwoPane)
+        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, mainListItems, mTwoPane)
     }
 
     class SimpleItemRecyclerViewAdapter(private val mParentActivity: FilmListActivity,
