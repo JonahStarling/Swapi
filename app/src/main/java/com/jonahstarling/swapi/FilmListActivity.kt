@@ -8,7 +8,9 @@ import SWStarshipsQuery
 import SWVehiclesQuery
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.view.MenuItemCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -46,6 +48,7 @@ class FilmListActivity : AppCompatActivity() {
      */
     private var mTwoPane: Boolean = false
     var mainListItems: MutableList<MainListObjects.MLObject> = ArrayList()
+    var mSelectedItems: MutableList<String> = ArrayList()
     lateinit var mAdapter: SimpleItemRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,7 +100,7 @@ class FilmListActivity : AppCompatActivity() {
 
             fun callSearch(query: String) {
                 val tempList: MutableList<MainListObjects.MLObject> = ArrayList()
-                for (swobject in MainListObjects.MLOBJECTS) {
+                for (swobject in mainListItems) {
                     val name = swobject.name as CharSequence
                     val objectType = swobject.objectType as CharSequence
                     if (name.contains(query, true) || objectType.contains(query, true)) {
@@ -108,41 +111,69 @@ class FilmListActivity : AppCompatActivity() {
                 mainListItems.addAll(tempList)
                 mAdapter.updateList(tempList)
             }
-
         })
-        val filterExpandListener = object : MenuItemCompat.OnActionExpandListener {
-            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                // Do something when action item collapses
-                return true  // Return true to collapse action view
-            }
-
-            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                // Do something when expanded
-                return true  // Return true to expand action view
-            }
-        }
-
-        // Get the MenuItem for the action item
-        val actionMenuItem = menu?.findItem(R.id.action_filter)
-
-        // Assign the listener to that action item
-        MenuItemCompat.setOnActionExpandListener(actionMenuItem, filterExpandListener)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_filter ->
+            R.id.action_filter -> {
+                showFilterDialog()
                 return true
-
-            R.id.app_bar_search ->
-                    return true
-
-            else ->
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item)
+            }
+            R.id.app_bar_search -> return true
+            else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showFilterDialog() {
+        val alertDialog = AlertDialog.Builder(this)
+        val selections = arrayOf("Film", "Person", "Planet", "Species", "Starship", "Vehicle")
+        val prevSelections = booleanArrayOf(false,false,false,false,false,false)
+        for (selection in mSelectedItems) {
+            when (selection) {
+                "Film" -> prevSelections[0] = true
+                "Person" -> prevSelections[1] = true
+                "Planet" -> prevSelections[2] = true
+                "Species" -> prevSelections[3] = true
+                "Starship" -> prevSelections[4] = true
+                "Vehicle" -> prevSelections[5] = true
+            }
+        }
+        alertDialog.setMultiChoiceItems(selections, prevSelections) { _, which, isChecked ->
+            var selectionValue = selections[which]
+            if (isChecked) {
+                mSelectedItems.add(selectionValue)
+            } else if (mSelectedItems.contains(selectionValue)) {
+                mSelectedItems.remove(selectionValue)
+            }
+        }
+        alertDialog.setPositiveButton("Filter") { _, _ ->
+            val tempList: MutableList<MainListObjects.MLObject> = ArrayList()
+            for (swobject in MainListObjects.MLOBJECTS) {
+                val objectType = swobject.objectType
+                if (mSelectedItems.contains(objectType)) {
+                    tempList.add(swobject)
+                }
+            }
+            mainListItems.clear()
+            mainListItems.addAll(tempList)
+            mAdapter.updateList(tempList)
+        }
+        alertDialog.setNegativeButton("Reset") { _, _ ->
+            val tempList: MutableList<MainListObjects.MLObject> = ArrayList()
+            for (swobject in MainListObjects.MLOBJECTS) {
+                val objectType = swobject.objectType
+                if (objectType == "Film") {
+                    tempList.add(swobject)
+                }
+            }
+            mainListItems.clear()
+            mainListItems.addAll(tempList)
+            mAdapter.updateList(mainListItems)
+        }
+        alertDialog.setTitle("Filter")
+        alertDialog.show()
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
@@ -186,6 +217,10 @@ class FilmListActivity : AppCompatActivity() {
             mMLObjects.clear()
             mMLObjects.addAll(newItems)
             notifyDataSetChanged()
+            if (mMLObjects.isEmpty()) {
+                val emptySnackbar = Snackbar.make(mParentActivity.findViewById<RecyclerView>(R.id.film_list), "No Results! Try changing your filter/search settings.", Snackbar.LENGTH_LONG)
+                emptySnackbar.show();
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -222,6 +257,10 @@ class FilmListActivity : AppCompatActivity() {
             val mImageView: ImageView = mView.image
         }
     }
+
+
+// --------------------------- Query Logic and Calls ---------------------------------------------
+    // Should be moved to separate file/class
 
     fun callFilmQuery(apolloClient: ApolloClient) {
         val filmQuery = SWFilmsQuery.builder().build()
@@ -268,7 +307,6 @@ class FilmListActivity : AppCompatActivity() {
                             val newPerson = People.Person(personDetails)
                             People.addPerson(newPerson)
                             MainListObjects.addMLObject(MainListObjects.MLObject(newPerson.id, newPerson.name, "Person"))
-                            mainListItems.add(MainListObjects.MLObject(newPerson.id, newPerson.name, "Person"))
                             i += 1
                         }
                     }
@@ -297,7 +335,6 @@ class FilmListActivity : AppCompatActivity() {
                             val newPlanet = Planets.Planet(planetDetails)
                             Planets.addPlanet(newPlanet)
                             MainListObjects.addMLObject(MainListObjects.MLObject(newPlanet.id, newPlanet.name, "Planet"))
-                            mainListItems.add(MainListObjects.MLObject(newPlanet.id, newPlanet.name, "Planet"))
                             i += 1
                         }
                     }
@@ -326,7 +363,6 @@ class FilmListActivity : AppCompatActivity() {
                             val newSpecies = Species.SPObject(speciesDetails)
                             Species.addSpecies(newSpecies)
                             MainListObjects.addMLObject(MainListObjects.MLObject(newSpecies.id, newSpecies.name, "Species"))
-                            mainListItems.add(MainListObjects.MLObject(newSpecies.id, newSpecies.name, "Species"))
                             i += 1
                         }
                     }
@@ -355,7 +391,6 @@ class FilmListActivity : AppCompatActivity() {
                             val newStarship = Starships.Starship(starshipDetails)
                             Starships.addStarship(newStarship)
                             MainListObjects.addMLObject(MainListObjects.MLObject(newStarship.id, newStarship.name, "Starship"))
-                            mainListItems.add(MainListObjects.MLObject(newStarship.id, newStarship.name, "Starship"))
                             i += 1
                         }
                     }
@@ -384,7 +419,6 @@ class FilmListActivity : AppCompatActivity() {
                             val newVehicle = Vehicles.Vehicle(vehicleDetails)
                             Vehicles.addVehicle(newVehicle)
                             MainListObjects.addMLObject(MainListObjects.MLObject(newVehicle.id, newVehicle.name, "Vehicle"))
-                            mainListItems.add(MainListObjects.MLObject(newVehicle.id, newVehicle.name, "Vehicle"))
                             i += 1
                         }
                     }
