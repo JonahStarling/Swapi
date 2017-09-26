@@ -100,7 +100,7 @@ class FilmListActivity : AppCompatActivity() {
 
             fun callSearch(query: String) {
                 val tempList: MutableList<MainListObjects.MLObject> = ArrayList()
-                for (swobject in mainListItems) {
+                for (swobject in MainListObjects.MLOBJECTS) {
                     val name = swobject.name as CharSequence
                     val objectType = swobject.objectType as CharSequence
                     if (name.contains(query, true) || objectType.contains(query, true)) {
