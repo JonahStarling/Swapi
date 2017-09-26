@@ -11,9 +11,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import com.apollographql.apollo.ApolloCall
@@ -26,6 +24,11 @@ import kotlinx.android.synthetic.main.activity_film_list.*
 import kotlinx.android.synthetic.main.film_list.*
 import kotlinx.android.synthetic.main.film_list_content.view.*
 import okhttp3.OkHttpClient
+import android.support.v4.view.MenuItemCompat
+import android.R.menu
+import android.support.v7.widget.SearchView
+import android.view.MenuItem.OnActionExpandListener
+
 
 /**
  * An activity representing a list of Pings. This activity
@@ -70,6 +73,26 @@ class FilmListActivity : AppCompatActivity() {
 
 
         setupRecyclerView(film_list)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.film_list_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_filter ->
+                return true
+
+            R.id.app_bar_search ->
+                    return true
+
+            else ->
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item)
+        }
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
