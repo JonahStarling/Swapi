@@ -28,7 +28,7 @@ import okhttp3.OkHttpClient
  * An activity representing a list of Pings. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
- * lead to a [FilmDetailActivity] representing
+ * lead to a [DetailActivity] representing
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
@@ -74,23 +74,45 @@ class FilmListActivity : AppCompatActivity() {
                                         private val mTwoPane: Boolean) :
             RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
 
-        private val mOnClickListener: View.OnClickListener
+        private val mFilmClickListener: View.OnClickListener
+        private val mPeopleClickListener: View.OnClickListener
 
         init {
-            mOnClickListener = View.OnClickListener { v ->
+            mFilmClickListener = View.OnClickListener { v ->
                 val item = v.tag as Films.Film
                 if (mTwoPane) {
-                    val fragment = FilmDetailFragment().apply {
+                    val fragment = DetailFragment().apply {
                         arguments = Bundle()
-                        arguments.putString(FilmDetailFragment.ARG_ITEM_ID, item.id)
+                        arguments.putString(DetailFragment.ARG_ITEM_ID, item.id)
+                        arguments.putString("ObjectType", "Film")
                     }
                     mParentActivity.supportFragmentManager
                             .beginTransaction()
                             .replace(R.id.film_detail_container, fragment)
                             .commit()
                 } else {
-                    val intent = Intent(v.context, FilmDetailActivity::class.java).apply {
-                        putExtra(FilmDetailFragment.ARG_ITEM_ID, item.id)
+                    val intent = Intent(v.context, DetailActivity::class.java).apply {
+                        putExtra(DetailFragment.ARG_ITEM_ID, item.id)
+                    }
+                    v.context.startActivity(intent)
+                }
+            }
+
+            mPeopleClickListener = View.OnClickListener { v ->
+                val item = v.tag as People.Person
+                if (mTwoPane) {
+                    val fragment = DetailFragment().apply {
+                        arguments = Bundle()
+                        arguments.putString(DetailFragment.ARG_ITEM_ID, item.id)
+                        arguments.putString("ObjectType", "Person")
+                    }
+                    mParentActivity.supportFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.film_detail_container, fragment)
+                            .commit()
+                } else {
+                    val intent = Intent(v.context, DetailActivity::class.java).apply {
+                        putExtra(DetailFragment.ARG_ITEM_ID, item.id)
                     }
                     v.context.startActivity(intent)
                 }
@@ -111,7 +133,7 @@ class FilmListActivity : AppCompatActivity() {
 
                     with (holder.itemView) {
                         tag = item
-                        setOnClickListener(mOnClickListener)
+                        setOnClickListener(mFilmClickListener)
                     }
                 }
                 in (mFilms.size)..(mFilms.size+mPeople.size-1) -> {
@@ -120,7 +142,7 @@ class FilmListActivity : AppCompatActivity() {
 
                     with (holder.itemView) {
                         tag = item
-                        setOnClickListener(mOnClickListener)
+                        setOnClickListener(mPeopleClickListener)
                     }
                 }
             }

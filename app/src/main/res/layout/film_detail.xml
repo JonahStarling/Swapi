@@ -25,7 +25,7 @@
         android:paddingLeft="32dp"
         android:paddingRight="16dp"
         android:paddingBottom="16dp"
-        tools:context="com.jonahstarling.swapi.FilmDetailFragment" />
+        tools:context="com.jonahstarling.swapi.DetailFragment" />
 
     <!-- Director Title and Text -->
     <TextView
@@ -48,7 +48,7 @@
         android:paddingLeft="32dp"
         android:paddingRight="16dp"
         android:paddingBottom="16dp"
-        tools:context="com.jonahstarling.swapi.FilmDetailFragment" />
+        tools:context="com.jonahstarling.swapi.DetailFragment" />
 
     <!-- Producers Title and Text -->
     <TextView
@@ -71,7 +71,7 @@
         android:paddingLeft="32dp"
         android:paddingRight="16dp"
         android:paddingBottom="16dp"
-        tools:context="com.jonahstarling.swapi.FilmDetailFragment" />
+        tools:context="com.jonahstarling.swapi.DetailFragment" />
 
     <!-- Opening Crawl Title and Text -->
     <TextView
@@ -94,7 +94,7 @@
         android:paddingLeft="32dp"
         android:paddingRight="16dp"
         android:paddingBottom="16dp"
-        tools:context="com.jonahstarling.swapi.FilmDetailFragment" />
+        tools:context="com.jonahstarling.swapi.DetailFragment" />
 
 
 </LinearLayout>

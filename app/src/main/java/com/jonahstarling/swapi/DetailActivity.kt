@@ -2,7 +2,6 @@ package com.jonahstarling.swapi
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_film_detail.*
@@ -13,7 +12,7 @@ import kotlinx.android.synthetic.main.activity_film_detail.*
  * item details are presented side-by-side with a list of items
  * in a [FilmListActivity].
  */
-class FilmDetailActivity : AppCompatActivity() {
+class DetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +35,9 @@ class FilmDetailActivity : AppCompatActivity() {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             val arguments = Bundle()
-            arguments.putString(FilmDetailFragment.ARG_ITEM_ID,intent.getStringExtra(FilmDetailFragment.ARG_ITEM_ID))
-            val fragment = FilmDetailFragment()
+            arguments.putString(DetailFragment.ARG_ITEM_ID,intent.getStringExtra(DetailFragment.ARG_ITEM_ID))
+            arguments.putString("ObjectType", intent.getStringExtra("ObjectType"))
+            val fragment = DetailFragment()
             fragment.arguments = arguments
             supportFragmentManager.beginTransaction()
                     .add(R.id.film_detail_container, fragment)
