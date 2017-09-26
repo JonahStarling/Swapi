@@ -8,11 +8,13 @@ import SWStarshipsQuery
 import SWVehiclesQuery
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
+import android.widget.SearchView
 import android.widget.TextView
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
@@ -24,10 +26,8 @@ import kotlinx.android.synthetic.main.activity_film_list.*
 import kotlinx.android.synthetic.main.film_list.*
 import kotlinx.android.synthetic.main.film_list_content.view.*
 import okhttp3.OkHttpClient
-import android.support.v4.view.MenuItemCompat
-import android.R.menu
-import android.support.v7.widget.SearchView
-import android.view.MenuItem.OnActionExpandListener
+
+
 
 
 /**
@@ -46,6 +46,7 @@ class FilmListActivity : AppCompatActivity() {
      */
     private var mTwoPane: Boolean = false
     var mainListItems: MutableList<MainListObjects.MLObject> = ArrayList()
+    lateinit var mAdapter: SimpleItemRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +72,10 @@ class FilmListActivity : AppCompatActivity() {
         callSpeciesQuery(apolloClient)
         callStarshipsQuery(apolloClient)
         callVehiclesQuery(apolloClient)
-        mainListItems.addAll(MainListObjects.MLOBJECTS)
+
+        if (mainListItems.size < 1) {
+            mainListItems.addAll(MainListObjects.MLOBJECTS)
+        }
 
         setupRecyclerView(film_list)
     }
@@ -79,20 +83,33 @@ class FilmListActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.film_list_menu, menu)
         val searchItem = menu?.findItem(R.id.app_bar_search)
-        val searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-        searchView.setOnSearchClickListener {
-            val searchTerm = searchView.query
-            val tempList: MutableList<MainListObjects.MLObject> = ArrayList()
-            for (swobject in MainListObjects.MLOBJECTS) {
-                val name = swobject.name as CharSequence
-                val objectType = swobject.objectType as CharSequence
-                if (name.contains(searchTerm, true) || name.contains(objectType, true)) {
-                    tempList.add(swobject)
-                }
+        val searchView = MenuItemCompat.getActionView(searchItem) as android.widget.SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                callSearch(query)
+                return true
             }
-            mainListItems.clear()
-            mainListItems.addAll(tempList)
-        }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                callSearch(newText)
+                return true
+            }
+
+            fun callSearch(query: String) {
+                val tempList: MutableList<MainListObjects.MLObject> = ArrayList()
+                for (swobject in MainListObjects.MLOBJECTS) {
+                    val name = swobject.name as CharSequence
+                    val objectType = swobject.objectType as CharSequence
+                    if (name.contains(query, true) || objectType.contains(query, true)) {
+                        tempList.add(swobject)
+                    }
+                }
+                mainListItems.clear()
+                mainListItems.addAll(tempList)
+                mAdapter.updateList(tempList)
+            }
+
+        })
         val filterExpandListener = object : MenuItemCompat.OnActionExpandListener {
             override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                 // Do something when action item collapses
@@ -129,11 +146,12 @@ class FilmListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, mainListItems, mTwoPane)
+        mAdapter = SimpleItemRecyclerViewAdapter(this, mainListItems, mTwoPane)
+        recyclerView.adapter = mAdapter
     }
 
     class SimpleItemRecyclerViewAdapter(private val mParentActivity: FilmListActivity,
-                                        private val mMLObjects: List<MainListObjects.MLObject>,
+                                        private val mMLObjects: MutableList<MainListObjects.MLObject>,
                                         private val mTwoPane: Boolean) :
             RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
 
@@ -162,6 +180,12 @@ class FilmListActivity : AppCompatActivity() {
                     v.context.startActivity(intent)
                 }
             }
+        }
+
+        fun updateList(newItems: List<MainListObjects.MLObject>) {
+            mMLObjects.clear()
+            mMLObjects.addAll(newItems)
+            notifyDataSetChanged()
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -215,6 +239,7 @@ class FilmListActivity : AppCompatActivity() {
                             val newFilm = Films.Film(filmDetails)
                             Films.addFilm(newFilm)
                             MainListObjects.addMLObject(MainListObjects.MLObject(newFilm.id, newFilm.title, "Film"))
+                            mainListItems.add(MainListObjects.MLObject(newFilm.id, newFilm.title, "Film"))
                             i += 1
                         }
                     }
@@ -243,6 +268,7 @@ class FilmListActivity : AppCompatActivity() {
                             val newPerson = People.Person(personDetails)
                             People.addPerson(newPerson)
                             MainListObjects.addMLObject(MainListObjects.MLObject(newPerson.id, newPerson.name, "Person"))
+                            mainListItems.add(MainListObjects.MLObject(newPerson.id, newPerson.name, "Person"))
                             i += 1
                         }
                     }
@@ -271,6 +297,7 @@ class FilmListActivity : AppCompatActivity() {
                             val newPlanet = Planets.Planet(planetDetails)
                             Planets.addPlanet(newPlanet)
                             MainListObjects.addMLObject(MainListObjects.MLObject(newPlanet.id, newPlanet.name, "Planet"))
+                            mainListItems.add(MainListObjects.MLObject(newPlanet.id, newPlanet.name, "Planet"))
                             i += 1
                         }
                     }
@@ -299,6 +326,7 @@ class FilmListActivity : AppCompatActivity() {
                             val newSpecies = Species.SPObject(speciesDetails)
                             Species.addSpecies(newSpecies)
                             MainListObjects.addMLObject(MainListObjects.MLObject(newSpecies.id, newSpecies.name, "Species"))
+                            mainListItems.add(MainListObjects.MLObject(newSpecies.id, newSpecies.name, "Species"))
                             i += 1
                         }
                     }
@@ -327,6 +355,7 @@ class FilmListActivity : AppCompatActivity() {
                             val newStarship = Starships.Starship(starshipDetails)
                             Starships.addStarship(newStarship)
                             MainListObjects.addMLObject(MainListObjects.MLObject(newStarship.id, newStarship.name, "Starship"))
+                            mainListItems.add(MainListObjects.MLObject(newStarship.id, newStarship.name, "Starship"))
                             i += 1
                         }
                     }
@@ -355,6 +384,7 @@ class FilmListActivity : AppCompatActivity() {
                             val newVehicle = Vehicles.Vehicle(vehicleDetails)
                             Vehicles.addVehicle(newVehicle)
                             MainListObjects.addMLObject(MainListObjects.MLObject(newVehicle.id, newVehicle.name, "Vehicle"))
+                            mainListItems.add(MainListObjects.MLObject(newVehicle.id, newVehicle.name, "Vehicle"))
                             i += 1
                         }
                     }
