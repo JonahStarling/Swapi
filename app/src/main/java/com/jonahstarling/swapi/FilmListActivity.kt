@@ -15,13 +15,8 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import com.jonahstarling.swapi.swobjects.Films
-import com.jonahstarling.swapi.swobjects.MainListObjects
-import com.jonahstarling.swapi.swobjects.People
-import com.jonahstarling.swapi.swobjects.Planets
-import fragment.FilmDetails
-import fragment.PersonDetails
-import fragment.PlanetDetails
+import com.jonahstarling.swapi.swobjects.*
+import fragment.*
 import kotlinx.android.synthetic.main.activity_film_list.*
 import kotlinx.android.synthetic.main.film_list.*
 import kotlinx.android.synthetic.main.film_list_content.view.*
@@ -61,9 +56,13 @@ class FilmListActivity : AppCompatActivity() {
         val BASE_URL = "http://10.0.2.2:54865/"
         val okHttpClient = OkHttpClient.Builder().build()
         val apolloClient = ApolloClient.builder().serverUrl(BASE_URL).okHttpClient(okHttpClient).build();
-        callFilmQuery(apolloClient)
+        //callFilmQuery(apolloClient)
         //callPeopleQuery(apolloClient)
-        callPlanetsQuery(apolloClient)
+        //callPlanetsQuery(apolloClient)
+        callSpeciesQuery(apolloClient)
+        callStarshipsQuery(apolloClient)
+        callVehiclesQuery(apolloClient)
+
 
         setupRecyclerView(film_list)
     }
@@ -207,6 +206,90 @@ class FilmListActivity : AppCompatActivity() {
 
                 override fun onFailure(e: ApolloException) {
                     Log.w("SWAPI-PLANETS_DATA", e.localizedMessage + ": " + e.cause.toString())
+                }
+            })
+        }
+    }
+
+    fun callSpeciesQuery(apolloClient: ApolloClient) {
+        val speciesQuery = SWSpeciesQuery.builder().build()
+        if (Species.SPECIES.size < 1) {
+            val speciesCall = apolloClient.query(speciesQuery)
+            speciesCall.enqueue(object : ApolloCall.Callback<SWSpeciesQuery.Data>() {
+                override fun onResponse(response: Response<SWSpeciesQuery.Data>) {
+                    val data = response.data()
+                    val allSpecies = data?.allSpecies()
+                    val species = allSpecies?.species()
+                    var i = 0
+                    if (species != null) {
+                        while (i < species.size) {
+                            val speciesDetails = species[i]?.fragments()?.speciesDetails() as SpeciesDetails
+                            val newSpecies = Species.SPObject(speciesDetails)
+                            Species.addSpecies(newSpecies)
+                            MainListObjects.addMLObject(MainListObjects.MLObject(newSpecies.id, newSpecies.name, "Species"))
+                            i += 1
+                        }
+                    }
+                }
+
+                override fun onFailure(e: ApolloException) {
+                    Log.w("SWAPI-SPECIES_DATA", e.localizedMessage + ": " + e.cause.toString())
+                }
+            })
+        }
+    }
+
+    fun callStarshipsQuery(apolloClient: ApolloClient) {
+        val starshipsQuery = SWStarshipsQuery.builder().build()
+        if (Starships.STARSHIPS.size < 1) {
+            val starshipsCall = apolloClient.query(starshipsQuery)
+            starshipsCall.enqueue(object : ApolloCall.Callback<SWStarshipsQuery.Data>() {
+                override fun onResponse(response: Response<SWStarshipsQuery.Data>) {
+                    val data = response.data()
+                    val allStarships = data?.allStarships()
+                    val starships = allStarships?.starships()
+                    var i = 0
+                    if (starships != null) {
+                        while (i < starships.size) {
+                            val starshipDetails = starships[i]?.fragments()?.starshipDetails() as StarshipDetails
+                            val newStarship = Starships.Starship(starshipDetails)
+                            Starships.addStarship(newStarship)
+                            MainListObjects.addMLObject(MainListObjects.MLObject(newStarship.id, newStarship.name, "Starship"))
+                            i += 1
+                        }
+                    }
+                }
+
+                override fun onFailure(e: ApolloException) {
+                    Log.w("SWAPI-STARSHIPS_DATA", e.localizedMessage + ": " + e.cause.toString())
+                }
+            })
+        }
+    }
+
+    fun callVehiclesQuery(apolloClient: ApolloClient) {
+        val vehiclesQuery = SWVehiclesQuery.builder().build()
+        if (Vehicles.VEHICLES.size < 1) {
+            val vehiclesCall = apolloClient.query(vehiclesQuery)
+            vehiclesCall.enqueue(object : ApolloCall.Callback<SWVehiclesQuery.Data>() {
+                override fun onResponse(response: Response<SWVehiclesQuery.Data>) {
+                    val data = response.data()
+                    val allVehicles = data?.allVehicles()
+                    val vehicles = allVehicles?.vehicles()
+                    var i = 0
+                    if (vehicles != null) {
+                        while (i < vehicles.size) {
+                            val vehicleDetails = vehicles[i]?.fragments()?.vehicleDetails() as VehicleDetails
+                            val newVehicle = Vehicles.Vehicle(vehicleDetails)
+                            Vehicles.addVehicle(newVehicle)
+                            MainListObjects.addMLObject(MainListObjects.MLObject(newVehicle.id, newVehicle.name, "Vehicle"))
+                            i += 1
+                        }
+                    }
+                }
+
+                override fun onFailure(e: ApolloException) {
+                    Log.w("SWAPI-VEHICLES_DATA", e.localizedMessage + ": " + e.cause.toString())
                 }
             })
         }

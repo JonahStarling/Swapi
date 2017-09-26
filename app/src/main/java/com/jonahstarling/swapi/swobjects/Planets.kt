@@ -27,7 +27,7 @@ object Planets {
         val population = planetDetails.population().toString()
         val climates = planetDetails.climates() as List<String>
         val terrains = planetDetails.terrains() as List<String>
-        val surfaceWater = planetDetails.surfaceWater() as String
+        val surfaceWater = planetDetails.surfaceWater().toString()
         override fun toString(): String = name
     }
 }

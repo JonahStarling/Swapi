@@ -20,4 +20,25 @@
     <string name="climates">Climates:</string>
     <string name="terrains">Terrains:</string>
     <string name="surface_water">Surface Water:</string>
+    <string name="classification">Classification:</string>
+    <string name="average_height">Average Height:</string>
+    <string name="designation">Designation:</string>
+    <string name="average_lifespan">Average Lifespan:</string>
+    <string name="eye_colors">Eye Colors:</string>
+    <string name="hair_colors">Hair Colors:</string>
+    <string name="skin_colors">Skin Colors:</string>
+    <string name="language">Language:</string>
+    <string name="model">Model:</string>
+    <string name="starship_class">Starship Class:</string>
+    <string name="vehicle_class">Vehicle Class:</string>
+    <string name="manufacturers">Manufacturers:</string>
+    <string name="cost_in_credits">Cost In Credits:</string>
+    <string name="length">Length:</string>
+    <string name="crew">Crew:</string>
+    <string name="passengers">Passengers:</string>
+    <string name="max_atmosphering_speed">Max Atmosphering Speed:</string>
+    <string name="hyperdrive_rating">Hyperdrive Rating:</string>
+    <string name="mglt">MGLT:</string>
+    <string name="cargo_capacity">Cargo Capacity:</string>
+    <string name="consumables">Consumables:</string>
 </resources>

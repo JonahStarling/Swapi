@@ -1,0 +1,20 @@
+query SWSpecies {
+  allSpecies {
+    species {
+    	...SpeciesDetails
+    }
+  }
+}
+
+fragment SpeciesDetails on Species {
+	id
+  name
+  classification
+  designation
+  averageHeight
+  averageLifespan
+  eyeColors
+  hairColors
+  skinColors
+  language
+}

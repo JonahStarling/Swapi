@@ -1,0 +1,22 @@
+query SWVehicles {
+  allVehicles {
+    vehicles {
+    	...VehicleDetails
+    }
+  }
+}
+
+fragment VehicleDetails on Vehicle {
+	id
+  name
+  model
+  vehicleClass
+  manufacturers
+  costInCredits
+  length
+  crew
+  passengers
+  maxAtmospheringSpeed
+  cargoCapacity
+  consumables
+}
