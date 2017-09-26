@@ -2,6 +2,10 @@ package com.jonahstarling.swapi
 
 import SWFilmsQuery
 import SWPeopleQuery
+import SWPlanetsQuery
+import SWSpeciesQuery
+import SWStarshipsQuery
+import SWVehiclesQuery
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -10,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
@@ -53,12 +58,12 @@ class FilmListActivity : AppCompatActivity() {
             mTwoPane = true
         }
 
-        val BASE_URL = "http://10.0.2.2:54865/"
+        val BASE_URL = "http://10.0.2.2:50187/"
         val okHttpClient = OkHttpClient.Builder().build()
         val apolloClient = ApolloClient.builder().serverUrl(BASE_URL).okHttpClient(okHttpClient).build();
-        //callFilmQuery(apolloClient)
-        //callPeopleQuery(apolloClient)
-        //callPlanetsQuery(apolloClient)
+        callFilmQuery(apolloClient)
+        callPeopleQuery(apolloClient)
+        callPlanetsQuery(apolloClient)
         callSpeciesQuery(apolloClient)
         callStarshipsQuery(apolloClient)
         callVehiclesQuery(apolloClient)
@@ -111,6 +116,16 @@ class FilmListActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = mMLObjects[position]
+            var imgId = 0
+            when (item.objectType) {
+                "Film" -> imgId = R.drawable.ic_local_movies_black_48dp
+                "Person" -> imgId = R.drawable.ic_person_black_48dp
+                "Planet" -> imgId = R.drawable.ic_public_black_48dp
+                "Species" -> imgId = R.drawable.ic_people_black_48dp
+                "Starship" -> imgId = R.drawable.ic_hot_tub_black_48dp
+                "Vehicle" -> imgId =R.drawable.ic_airport_shuttle_black_48dp
+            }
+            holder.mImageView.setImageResource(imgId)
             holder.mTitleView.text = item.name
             with (holder.itemView) {
                 tag = item
@@ -124,6 +139,7 @@ class FilmListActivity : AppCompatActivity() {
 
         inner class ViewHolder(mView: View) : RecyclerView.ViewHolder(mView) {
             val mTitleView: TextView = mView.title
+            val mImageView: ImageView = mView.image
         }
     }
 

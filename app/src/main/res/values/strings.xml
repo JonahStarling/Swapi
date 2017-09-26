@@ -41,4 +41,6 @@
     <string name="mglt">MGLT:</string>
     <string name="cargo_capacity">Cargo Capacity:</string>
     <string name="consumables">Consumables:</string>
+    <string name="filter">Filter</string>
+    <string name="search">Search</string>
 </resources>
