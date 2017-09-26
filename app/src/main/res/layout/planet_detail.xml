@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- Diameter Title and Text -->
+    <TextView
+        android:id="@+id/diameterTitle"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/diameter"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="0dp"/>
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/diameter"
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        tools:context="com.jonahstarling.swapi.DetailFragment" />
+
+    <!-- Rotation Period Title and Text -->
+    <TextView
+        android:id="@+id/rotationPeriodTitle"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/rotation_period"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="0dp"/>
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/rotationPeriod"
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        tools:context="com.jonahstarling.swapi.DetailFragment" />
+
+    <!-- Orbital Period Title and Text -->
+    <TextView
+        android:id="@+id/orbitalPeriodTitle"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/orbital_period"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="0dp"/>
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/orbitalPeriod"
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        tools:context="com.jonahstarling.swapi.DetailFragment" />
+
+    <!-- Gravity Title and Text -->
+    <TextView
+        android:id="@+id/gravityTitle"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/gravity"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="0dp"/>
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/gravity"
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        tools:context="com.jonahstarling.swapi.DetailFragment" />
+
+    <!-- Population Title and Text -->
+    <TextView
+        android:id="@+id/populationTitle"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/population"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="0dp"/>
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/population"
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        tools:context="com.jonahstarling.swapi.DetailFragment" />
+
+    <!-- Climates Title and Text -->
+    <TextView
+        android:id="@+id/climatesTitle"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/climates"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="0dp"/>
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/climates"
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        tools:context="com.jonahstarling.swapi.DetailFragment" />
+
+    <!-- Terrains Title and Text -->
+    <TextView
+        android:id="@+id/terrainsTitle"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/terrains"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="0dp"/>
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/terrains"
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        tools:context="com.jonahstarling.swapi.DetailFragment" />
+
+    <!-- Surface Water Title and Text -->
+    <TextView
+        android:id="@+id/surfaceWaterTitle"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/surface_water"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="0dp"/>
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/surfaceWater"
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        tools:context="com.jonahstarling.swapi.DetailFragment" />
+
+</LinearLayout>

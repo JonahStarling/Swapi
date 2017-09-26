@@ -16,9 +16,12 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.jonahstarling.swapi.swobjects.Films
+import com.jonahstarling.swapi.swobjects.MainListObjects
 import com.jonahstarling.swapi.swobjects.People
+import com.jonahstarling.swapi.swobjects.Planets
 import fragment.FilmDetails
 import fragment.PersonDetails
+import fragment.PlanetDetails
 import kotlinx.android.synthetic.main.activity_film_list.*
 import kotlinx.android.synthetic.main.film_list.*
 import kotlinx.android.synthetic.main.film_list_content.view.*
@@ -59,32 +62,31 @@ class FilmListActivity : AppCompatActivity() {
         val okHttpClient = OkHttpClient.Builder().build()
         val apolloClient = ApolloClient.builder().serverUrl(BASE_URL).okHttpClient(okHttpClient).build();
         callFilmQuery(apolloClient)
-        callPeopleQuery(apolloClient)
+        //callPeopleQuery(apolloClient)
+        callPlanetsQuery(apolloClient)
 
         setupRecyclerView(film_list)
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, Films.FILMS, People.PEOPLE, mTwoPane)
+        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, MainListObjects.MLOBJECTS, mTwoPane)
     }
 
     class SimpleItemRecyclerViewAdapter(private val mParentActivity: FilmListActivity,
-                                        private val mFilms: List<Films.Film>,
-                                        private val mPeople: List<People.Person>,
+                                        private val mMLObjects: List<MainListObjects.MLObject>,
                                         private val mTwoPane: Boolean) :
             RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
 
-        private val mFilmClickListener: View.OnClickListener
-        private val mPeopleClickListener: View.OnClickListener
+        private val mOnClickListener: View.OnClickListener
 
         init {
-            mFilmClickListener = View.OnClickListener { v ->
-                val item = v.tag as Films.Film
+            mOnClickListener = View.OnClickListener { v ->
+                val item = v.tag as MainListObjects.MLObject
                 if (mTwoPane) {
                     val fragment = DetailFragment().apply {
                         arguments = Bundle()
                         arguments.putString(DetailFragment.ARG_ITEM_ID, item.id)
-                        arguments.putString(DetailFragment.OBJ_TYPE, "Film")
+                        arguments.putString(DetailFragment.OBJ_TYPE, item.objectType)
                     }
                     mParentActivity.supportFragmentManager
                             .beginTransaction()
@@ -94,30 +96,7 @@ class FilmListActivity : AppCompatActivity() {
                     val intent = Intent(v.context, DetailActivity::class.java).apply {
                         val extrasBundle = Bundle()
                         extrasBundle.putString(DetailFragment.ARG_ITEM_ID, item.id)
-                        extrasBundle.putString(DetailFragment.OBJ_TYPE, "Film")
-                        putExtra("extrasBundle", extrasBundle)
-                    }
-                    v.context.startActivity(intent)
-                }
-            }
-
-            mPeopleClickListener = View.OnClickListener { v ->
-                val item = v.tag as People.Person
-                if (mTwoPane) {
-                    val fragment = DetailFragment().apply {
-                        arguments = Bundle()
-                        arguments.putString(DetailFragment.ARG_ITEM_ID, item.id)
-                        arguments.putString(DetailFragment.OBJ_TYPE, "Person")
-                    }
-                    mParentActivity.supportFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.film_detail_container, fragment)
-                            .commit()
-                } else {
-                    val intent = Intent(v.context, DetailActivity::class.java).apply {
-                        val extrasBundle = Bundle()
-                        extrasBundle.putString(DetailFragment.ARG_ITEM_ID, item.id)
-                        extrasBundle.putString(DetailFragment.OBJ_TYPE, "Person")
+                        extrasBundle.putString(DetailFragment.OBJ_TYPE, item.objectType)
                         putExtra("extrasBundle", extrasBundle)
                     }
                     v.context.startActivity(intent)
@@ -132,30 +111,16 @@ class FilmListActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            when(position) {
-                in 0..(mFilms.size-1) -> {
-                    val item = mFilms[position]
-                    holder.mTitleView.text = item.title
-
-                    with (holder.itemView) {
-                        tag = item
-                        setOnClickListener(mFilmClickListener)
-                    }
-                }
-                in (mFilms.size)..(mFilms.size+mPeople.size-1) -> {
-                    val item = mPeople[position-mFilms.size]
-                    holder.mTitleView.text = item.name
-
-                    with (holder.itemView) {
-                        tag = item
-                        setOnClickListener(mPeopleClickListener)
-                    }
-                }
+            val item = mMLObjects[position]
+            holder.mTitleView.text = item.name
+            with (holder.itemView) {
+                tag = item
+                setOnClickListener(mOnClickListener)
             }
         }
 
         override fun getItemCount(): Int {
-            return mFilms.size + mPeople.size
+            return mMLObjects.size
         }
 
         inner class ViewHolder(mView: View) : RecyclerView.ViewHolder(mView) {
@@ -178,13 +143,14 @@ class FilmListActivity : AppCompatActivity() {
                             val filmDetails = films[i]?.fragments()?.filmDetails() as FilmDetails
                             val newFilm = Films.Film(filmDetails)
                             Films.addFilm(newFilm)
+                            MainListObjects.addMLObject(MainListObjects.MLObject(newFilm.id, newFilm.title, "Film"))
                             i += 1
                         }
                     }
                 }
 
                 override fun onFailure(e: ApolloException) {
-                    Log.w("SWAPI-DATA", e.localizedMessage + ": " + e.cause.toString())
+                    Log.w("SWAPI-FILM_DATA", e.localizedMessage + ": " + e.cause.toString())
                 }
             })
         }
@@ -205,13 +171,42 @@ class FilmListActivity : AppCompatActivity() {
                             val personDetails = people[i]?.fragments()?.personDetails() as PersonDetails
                             val newPerson = People.Person(personDetails)
                             People.addPerson(newPerson)
+                            MainListObjects.addMLObject(MainListObjects.MLObject(newPerson.id, newPerson.name, "Person"))
                             i += 1
                         }
                     }
                 }
 
                 override fun onFailure(e: ApolloException) {
-                    Log.w("SWAPI-DATA", e.localizedMessage + ": " + e.cause.toString())
+                    Log.w("SWAPI-PEOPLE_DATA", e.localizedMessage + ": " + e.cause.toString())
+                }
+            })
+        }
+    }
+
+    fun callPlanetsQuery(apolloClient: ApolloClient) {
+        val planetsQuery = SWPlanetsQuery.builder().build()
+        if (Planets.PLANETS.size < 1) {
+            val planetsCall = apolloClient.query(planetsQuery)
+            planetsCall.enqueue(object : ApolloCall.Callback<SWPlanetsQuery.Data>() {
+                override fun onResponse(response: Response<SWPlanetsQuery.Data>) {
+                    val data = response.data()
+                    val allPlanets = data?.allPlanets()
+                    val planets = allPlanets?.planets()
+                    var i = 0
+                    if (planets != null) {
+                        while (i < planets.size) {
+                            val planetDetails = planets[i]?.fragments()?.planetDetails() as PlanetDetails
+                            val newPlanet = Planets.Planet(planetDetails)
+                            Planets.addPlanet(newPlanet)
+                            MainListObjects.addMLObject(MainListObjects.MLObject(newPlanet.id, newPlanet.name, "Planet"))
+                            i += 1
+                        }
+                    }
+                }
+
+                override fun onFailure(e: ApolloException) {
+                    Log.w("SWAPI-PLANETS_DATA", e.localizedMessage + ": " + e.cause.toString())
                 }
             })
         }
