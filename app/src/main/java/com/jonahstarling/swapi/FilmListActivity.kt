@@ -55,7 +55,7 @@ class FilmListActivity : AppCompatActivity() {
             mTwoPane = true
         }
 
-        val BASE_URL = "http://10.0.2.2:52426/"
+        val BASE_URL = "http://10.0.2.2:54865/"
         val okHttpClient = OkHttpClient.Builder().build()
         val apolloClient = ApolloClient.builder().serverUrl(BASE_URL).okHttpClient(okHttpClient).build();
         callFilmQuery(apolloClient)
@@ -84,7 +84,7 @@ class FilmListActivity : AppCompatActivity() {
                     val fragment = DetailFragment().apply {
                         arguments = Bundle()
                         arguments.putString(DetailFragment.ARG_ITEM_ID, item.id)
-                        arguments.putString("ObjectType", "Film")
+                        arguments.putString(DetailFragment.OBJ_TYPE, "Film")
                     }
                     mParentActivity.supportFragmentManager
                             .beginTransaction()
@@ -92,7 +92,10 @@ class FilmListActivity : AppCompatActivity() {
                             .commit()
                 } else {
                     val intent = Intent(v.context, DetailActivity::class.java).apply {
-                        putExtra(DetailFragment.ARG_ITEM_ID, item.id)
+                        val extrasBundle = Bundle()
+                        extrasBundle.putString(DetailFragment.ARG_ITEM_ID, item.id)
+                        extrasBundle.putString(DetailFragment.OBJ_TYPE, "Film")
+                        putExtra("extrasBundle", extrasBundle)
                     }
                     v.context.startActivity(intent)
                 }
@@ -104,7 +107,7 @@ class FilmListActivity : AppCompatActivity() {
                     val fragment = DetailFragment().apply {
                         arguments = Bundle()
                         arguments.putString(DetailFragment.ARG_ITEM_ID, item.id)
-                        arguments.putString("ObjectType", "Person")
+                        arguments.putString(DetailFragment.OBJ_TYPE, "Person")
                     }
                     mParentActivity.supportFragmentManager
                             .beginTransaction()
@@ -112,7 +115,10 @@ class FilmListActivity : AppCompatActivity() {
                             .commit()
                 } else {
                     val intent = Intent(v.context, DetailActivity::class.java).apply {
-                        putExtra(DetailFragment.ARG_ITEM_ID, item.id)
+                        val extrasBundle = Bundle()
+                        extrasBundle.putString(DetailFragment.ARG_ITEM_ID, item.id)
+                        extrasBundle.putString(DetailFragment.OBJ_TYPE, "Person")
+                        putExtra("extrasBundle", extrasBundle)
                     }
                     v.context.startActivity(intent)
                 }
@@ -159,7 +165,7 @@ class FilmListActivity : AppCompatActivity() {
 
     fun callFilmQuery(apolloClient: ApolloClient) {
         val filmQuery = SWFilmsQuery.builder().build()
-        if (Films.FILMS.size <= 6) {
+        if (Films.FILMS.size < 1) {
             val filmCall = apolloClient.query(filmQuery)
             filmCall.enqueue(object : ApolloCall.Callback<SWFilmsQuery.Data>() {
                 override fun onResponse(response: Response<SWFilmsQuery.Data>) {

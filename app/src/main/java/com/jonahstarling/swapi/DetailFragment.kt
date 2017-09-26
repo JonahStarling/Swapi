@@ -28,9 +28,8 @@ class DetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (arguments.containsKey(ARG_ITEM_ID) && arguments.containsKey("ObjectType")) {
-            when (arguments.getString("ObjectType")) {
+        if (arguments.containsKey(ARG_ITEM_ID) && arguments.containsKey(OBJ_TYPE)) {
+            when (arguments.getString(OBJ_TYPE)) {
                 "Film" -> {
                     mFilm = Films.FILM_MAP[arguments.getString(ARG_ITEM_ID)]
                     mFilm?.let {
@@ -50,7 +49,7 @@ class DetailFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         var rootView: View
-        when (arguments.getString("ObjectType")) {
+        when (arguments.getString(OBJ_TYPE)) {
             "Film" -> {
                 rootView = inflater.inflate(R.layout.film_detail, container, false)
                 mFilm?.let {
@@ -91,5 +90,6 @@ class DetailFragment : Fragment() {
          * represents.
          */
         const val ARG_ITEM_ID = "item_id"
+        const val OBJ_TYPE = "object_type"
     }
 }
