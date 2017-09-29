@@ -5,7 +5,14 @@ import java.util.*
 
 /**
  * Created by Jonah on 9/23/2017.
+ * People is a basic object in the Star Wars API
+ * It represents one of the characters in the Star Wars Movies
+ * Documentation for the Star Wars API People object can be found at:
+ *  https://swapi.co/documentation#people
  */
+
+// People is an Object Declaration
+// Object Declaration follows the Singleton Pattern
 object People {
 
     val PEOPLE: MutableList<Person> = ArrayList()
@@ -16,6 +23,8 @@ object People {
         PEOPLE_MAP.put(item.id, item)
     }
 
+    // People is a Data Class
+    // A Data Class is designed to only hold data
     data class Person(val personDetails: PersonDetails) {
         val id = personDetails.id()
         val name = personDetails.name() as String

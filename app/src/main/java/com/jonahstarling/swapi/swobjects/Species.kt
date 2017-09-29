@@ -1,12 +1,18 @@
 package com.jonahstarling.swapi.swobjects
 
 import fragment.SpeciesDetails
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by Jonah on 9/23/2017.
+ * Species is a basic object in the Star Wars API
+ * It represents one of the species in the Star Wars Movies
+ * Documentation for the Star Wars API Species object can be found at:
+ *  https://swapi.co/documentation#species
  */
+
+// Species is an Object Declaration
+// Object Declaration follows the Singleton Pattern
 object Species {
 
     val SPECIES: MutableList<SPObject> = ArrayList()
@@ -17,6 +23,8 @@ object Species {
         SPECIES_MAP.put(item.id, item)
     }
 
+    // SPObject is a Data Class
+    // A Data Class is designed to only hold data
     data class SPObject(val speciesDetails: SpeciesDetails) {
         val id = speciesDetails.id()
         val name = speciesDetails.name() as String

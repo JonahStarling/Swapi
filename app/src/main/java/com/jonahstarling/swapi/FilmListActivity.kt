@@ -55,7 +55,7 @@ class FilmListActivity : AppCompatActivity() {
             mTwoPane = true
         }
 
-        val BASE_URL = "http://10.0.2.2:55514/"
+        val BASE_URL = "http://10.0.2.2:53393/"
         val okHttpClient = OkHttpClient.Builder().build()
         val apolloClient = ApolloClient.builder().serverUrl(BASE_URL).okHttpClient(okHttpClient).build();
         val swQueries = SWQueries()

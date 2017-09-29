@@ -1,12 +1,19 @@
 package com.jonahstarling.swapi.swobjects
 
 import fragment.StarshipDetails
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by Jonah on 9/23/2017.
+ * Starships is a basic object in the Star Wars API
+ * It represents one of the starships in the Star Wars Movies
+ * It is different from Vehicles
+ * Documentation for the Star Wars API Starships object can be found at:
+ *  https://swapi.co/documentation#starships
  */
+
+// Starships is an Object Declaration
+// Object Declaration follows the Singleton Pattern
 object Starships {
 
     val STARSHIPS: MutableList<Starship> = ArrayList()
@@ -17,6 +24,8 @@ object Starships {
         STARSHIPS_MAP.put(item.id, item)
     }
 
+    // Starship is a Data Class
+    // A Data Class is designed to only hold data
     data class Starship(val starshipDetails: StarshipDetails) {
         val id = starshipDetails.id()
         val name = starshipDetails.name() as String
